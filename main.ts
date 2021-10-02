@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const Ring = SpriteKind.create()
+    export const Boss = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     scene.setBackgroundImage(assets.image`blank`)
@@ -32,6 +33,9 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     sprites.gravity_jump(mySprite)
+})
+scene.onHitWall(SpriteKind.Boss, function (sprite, location) {
+    sprites.wall_jump(sprite)
 })
 scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     sprites.wall_jump(sprite)
@@ -75,9 +79,6 @@ scene.onOverlapTile(SpriteKind.Projectile, assets.tile`boulder`, function (sprit
 controller.combos.attachCombo("udlr", function () {
     info.setLife(3)
 })
-controller.combos.attachSpecialCode(function () {
-	
-})
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
     sprite.destroy()
@@ -97,8 +98,8 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`door1`, function (sprite, loc
     game.level_num(2)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    tiles.placeOnRandomTile(otherSprite, assets.tile`rubble`)
     info.changeLifeBy(-1)
+    otherSprite.destroy()
     animation.runImageAnimation(
     mySprite,
     assets.animation`sc damage`,
@@ -108,6 +109,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 })
 let projectile: Sprite = null
 let mySprite: Sprite = null
+let Boss_Health = 7
 let CHEATED = 2
 game.splash("HELLO SHANG CHI USE THE KEYS TO MOVE LEFT TO RIGHT. AND A TO JUMP. DOWN KEY TO ATTACK. AND B TO HOVER")
 info.changeLifeBy(2)
